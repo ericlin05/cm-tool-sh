@@ -8,7 +8,7 @@ SERVICE=$3
 TLS_ENABLED=$4
 
 BASE_DIR=$(dirname $0)
-source $BASE_DIR/../../config.sh $HOST $TLS_ENABLED
+source $BASE_DIR/../../../config.sh $HOST $TLS_ENABLED
 
 # https://www.cloudera.com/documentation/enterprise/latest/topics/impala_ssl.html
 

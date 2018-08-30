@@ -5,7 +5,7 @@ TLS_ENABLED=$2
 CLUSTER_NAME=$3
 
 BASE_DIR=$(dirname $0)
-source $BASE_DIR/../config.sh $HOST $TLS_ENABLED
+source $BASE_DIR/../../config.sh $HOST $TLS_ENABLED
 
 services=("hdfs" "yarn" "hue" "hive" "impala" "hbase" "oozie")
 for service in ${services[@]}
