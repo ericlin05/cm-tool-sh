@@ -2,13 +2,13 @@
 
 set -e
 
-HOST=$1
+CM_HOST=$1
 CLUSTER=$2
 SERVICE=$3
 TLS_ENABLED=$4
 
 BASE_DIR=$(dirname $0)
-source $BASE_DIR/../../../config.sh $HOST $TLS_ENABLED
+source $BASE_DIR/../../../config.sh $CM_HOST $TLS_ENABLED
 
 # https://www.cloudera.com/documentation/enterprise/latest/topics/cm_sg_ssl_yarn_mr_hdfs.html 
 

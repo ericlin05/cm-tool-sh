@@ -11,6 +11,7 @@ source $BASE_DIR/../config.sh ""
 
 echo "Extracting Java Home path at: $JAVA_HOME"
 
+# default to generating self-signed certificates
 if [ $TYPE == '' ] || [ $TYPE != 'self' ] || [ $TYPE != 'ca' ]; then
   TYPE='self'
 fi
@@ -65,7 +66,6 @@ generate_ca_signed()
   
   echo "Importing it into the keystore: $CERT_DIR/$(hostname -f).jks"
   $JAVA_HOME/bin/keytool -importcert -alias $(hostname -f) -file $CERT_DIR/$(hostname -f).pem -keystore $CERT_DIR/$(hostname -f).jks -storepass $KEYSTORE_PASS -noprompt
-  
 }
 
 generate_self_signed()
@@ -121,7 +121,6 @@ ln -s $CERT_DIR/$(hostname -f).pem $CERT_DIR/server.pem
 echo ""
 echo "This is CM server, creating symbolic links (symlink) for keystore file $CERT_DIR/server.jks"
 ln -s $CERT_DIR/$(hostname -f).jks $CERT_DIR/server.jks
-
 
 # Now need to convert jks to pem
 # https://www.cloudera.com/documentation/enterprise/latest/topics/cm_sg_openssl_jks.html#concept_ek3_sdl_rp

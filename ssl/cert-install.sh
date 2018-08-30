@@ -2,12 +2,12 @@
 
 set -e
 
-SERVER_HOST="$1"
-IS_SECURE="$2"
+CM_HOST="$1"
+TLS_ENABLED="$2"
 TYPE="$3"
 
 BASE_DIR=$(dirname $0)
-source $BASE_DIR/../config.sh $SERVER_HOST $IS_SECURE
+source $BASE_DIR/../config.sh $CM_HOST $TLS_ENABLED
 
 if [ $TYPE == '' ] || [ $TYPE != 'self' ] || [ $TYPE != 'ca' ]; then
   TYPE='self'
@@ -36,7 +36,7 @@ run_on_host()
 }
 
 # generating certificates on each host
-run_on_host $SERVER_HOST $TYPE
+run_on_host $CM_HOST $TYPE
 for host in "${CLUSTER_HOSTS[@]}"
 do
   run_on_host $host $TYPE
@@ -46,7 +46,7 @@ done
 # so that they can each server can be trusted with each other, needed for Hue, Impala etc
 echo ""
 echo "Concatenating pem files together from all hosts"
-ssh root@$SERVER_HOST "cat $CERT_DIR/server.pem" > /tmp/tmp-cert-concat.pem
+ssh root@$CM_HOST "cat $CERT_DIR/server.pem" > /tmp/tmp-cert-concat.pem
 for host in "${CLUSTER_HOSTS[@]}"
 do
   ssh root@$host "cat $CERT_DIR/server.pem" >> /tmp/tmp-cert-concat.pem
@@ -55,7 +55,7 @@ done
 # after finished, re-upload them back to their original location
 echo ""
 echo "Re-uploading concatenated files back to each host"
-scp /tmp/tmp-cert-concat.pem root@$SERVER_HOST:$CERT_DIR/$CA_CERTIFICATE
+scp /tmp/tmp-cert-concat.pem root@$CM_HOST:$CERT_DIR/$CA_CERTIFICATE
 for host in "${CLUSTER_HOSTS[@]}"
 do
   scp /tmp/tmp-cert-concat.pem root@$host:$CERT_DIR/$CA_CERTIFICATE

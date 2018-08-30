@@ -2,11 +2,11 @@
 
 set -e
 
-HOST=$1
+CM_HOST=$1
 TLS_ENABLED=$2
 
 BASE_DIR=$(dirname $0)
-source $BASE_DIR/../../config.sh $HOST $TLS_ENABLED
+source $BASE_DIR/../../config.sh $CM_HOST $TLS_ENABLED
 
 echo ""
 echo "Updating CM KeyStore Path and Password"
