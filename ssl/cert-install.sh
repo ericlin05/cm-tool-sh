@@ -2,6 +2,16 @@
 
 set -e
 
+if [ "$1" == "-h" ] || [ "$1" == "-help" ]; then
+  echo ""
+  echo "Usage: bash cert-install.sh CM_HOST TLS_ENABLED TYPE"
+  echo "  CM_HOST:     Cloudera Manager Host URL, without port number"
+  echo "  TLS_ENABLED: Whether Cloudera Manager already has TLS enabled or not"
+  echo "  TYPE:        Either \"ca\" for CA Signed Certificate or \"self\" for Self-Signed Certificate"
+  echo ""
+  exit
+fi
+
 CM_HOST="$1"
 TLS_ENABLED="$2"
 TYPE="$3"

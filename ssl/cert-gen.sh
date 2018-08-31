@@ -3,6 +3,14 @@
 # this will force this script to exit if any of the commands failed
 set -e
 
+if [ "$1" == "-h" ] || [ "$1" == "-help" ]; then
+  echo ""
+  echo "Usage: bash cert-gen.sh TYPE"
+  echo "  TYPE: either \"ca\" for CA Signed Certificate or \"self\" for Self-Signed Certificate"
+  echo ""
+  exit
+fi
+
 TYPE="$1"
 
 BASE_DIR=$(dirname $0)
