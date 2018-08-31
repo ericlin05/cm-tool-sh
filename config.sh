@@ -34,3 +34,5 @@ TRUSTSTORE_PASS="changeit"
 # concatenated pem files from each host
 CA_CERTIFICATE=ca-certificate.pem
 
+SUPPORTED_SERVICES=("hdfs" "yarn" "hue" "hive" "impala" "hbase" "oozie")
+
