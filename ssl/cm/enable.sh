@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # This script helps to enable TLS for:
 # - CM Admin Console
 # - CM Management Services
@@ -7,16 +9,14 @@
 # Steps followed from below official doc:
 # https://www.cloudera.com/documentation/enterprise/latest/topics/how_to_configure_cm_tls.html
 
-if [ "$1" == "-h" ] || [ "$1" == "-help" ]; then
+if [ "$1" == "-h" ] || [ "$1" == "-help" ] || [ "$1" == "--help" ]; then
   echo ""
-  echo "Usage: bash enable-agent.sh CM_HOST TLS_ENABLED"
+  echo "Usage: bash enable.sh CM_HOST TLS_ENABLED"
   echo "  CM_HOST:     Cloudera Manager Host URL, without port number"
   echo "  TLS_ENABLED: Whether Cloudera Manager already has TLS enabled or not"
   echo ""
   exit
 fi
-
-set -e
 
 CM_HOST=$1
 TLS_ENABLED=$2
@@ -40,4 +40,3 @@ if [ $response == "yes" ]; then
   echo "After CM restarted, please log into CM and restart Cloudera Management services"
   echo ""
 fi
-

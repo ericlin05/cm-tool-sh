@@ -2,7 +2,7 @@
 
 set -e
 
-if [ "$1" == "-h" ] || [ "$1" == "-help" ]; then
+if [ "$1" == "-h" ] || [ "$1" == "-help" ] || [ "$1" == "--help" ]; then
   echo ""
   echo "Usage: bash cert-install.sh CM_HOST TLS_ENABLED TYPE"
   echo "  CM_HOST:     Cloudera Manager Host URL, without port number"
@@ -89,4 +89,3 @@ if [ "$TYPE" == "ca" ]; then
 else
   concat_cert_self_signed ${CLUSTER_HOSTS[@]}
 fi
-

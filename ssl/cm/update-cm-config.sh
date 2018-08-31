@@ -2,6 +2,16 @@
 
 set -e
 
+if [ "$1" == "-h" ] || [ "$1" == "-help" ] || [ "$1" == "--help" ]; then
+  echo ""
+  echo "Usage: bash enable-agent.sh CM_HOST TLS_ENABLED"
+  echo "  CM_HOST:     Cloudera Manager Host URL, without port number"
+  echo "  TLS_ENABLED: Whether Cloudera Manager already has TLS enabled or not, "
+  echo "               used to determine the URL to use"
+  echo ""
+  exit
+fi
+
 CM_HOST=$1
 TLS_ENABLED=$2
 

@@ -2,7 +2,7 @@
 
 set -e
 
-if [ "$1" == "-h" ] || [ "$1" == "-help" ]; then
+if [ "$1" == "-h" ] || [ "$1" == "-help" ] || [ "$1" == "--help" ]; then
   echo ""
   echo "Usage: bash enable-agent.sh CM_HOST TLS_ENABLED"
   echo "  CM_HOST:     Cloudera Manager Host URL, without port number"

@@ -1,8 +1,10 @@
 #!/bin/bash
 
-if [ "$1" == "-h" ] || [ "$1" == "-help" ]; then
+set -e
+
+if [ "$1" == "-h" ] || [ "$1" == "-help" ] || [ "$1" == "--help" ]; then
   echo ""
-  echo "Usage: bash enable-agent.sh CM_HOST TLS_ENABLED"
+  echo "Usage: bash enable.sh CM_HOST TLS_ENABLED"
   echo "  CM_HOST:     Cloudera Manager Host URL, without port number"
   echo "  TLS_ENABLED: Whether Cloudera Manager already has TLS enabled or not"
   echo ""
@@ -137,4 +139,3 @@ echo "Restarting Cluster"
 curl -X POST -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE \
   -d "{ \"restartOnlyStaleServices\": \"true\", \"redeployClientConfiguration\": \"true\" }" \
   "$API_URL/clusters/$CLUSTER_NAME/commands/restart"
-

@@ -3,7 +3,7 @@
 # this will force this script to exit if any of the commands failed
 set -e
 
-if [ "$1" == "-h" ] || [ "$1" == "-help" ]; then
+if [ "$1" == "-h" ] || [ "$1" == "-help" ] || [ "$1" == "--help" ]; then
   echo ""
   echo "Usage: bash cert-gen.sh TYPE"
   echo "  TYPE: either \"ca\" for CA Signed Certificate or \"self\" for Self-Signed Certificate"
@@ -161,4 +161,3 @@ ln -s $CERT_DIR/$(hostname -f).key $CERT_DIR/server.key
 
 echo "======================================================================================================"
 echo ""
-

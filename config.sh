@@ -1,3 +1,6 @@
+#!/usr/bin/env bash
+
+set -e
 
 host=$1
 is_secure=$2
@@ -5,24 +8,28 @@ is_secure=$2
 CM_USER="admin"
 CM_PASS="admin"
 
+if [ -z "$host" ]; then
+  echo ""
+  echo "No CM host URL provided!"
+  echo ""
+  exit 1
+fi
 
-if [ "$host" != "" ]; then
-  CM_URL="http://$host:7180"
-  INSECURE=""
+CM_URL="http://$host:7180"
+INSECURE=""
 
-  if [ $is_secure == 1 ]; then
-    CM_URL="https://$host:7183"
-    INSECURE=" --insecure"
-  fi
+if [ $is_secure == 1 ]; then
+  CM_URL="https://$host:7183"
+  INSECURE=" --insecure"
+fi
 
-  VERSION=`curl -u $CM_USER:$CM_PASS "$CM_URL/api/version" $INSECURE`
-  echo "API Version is: $VERSION"
+VERSION=`curl -u $CM_USER:$CM_PASS "$CM_URL/api/version" $INSECURE`
+echo "API Version is: $VERSION"
 
-  API_URL="$CM_URL/api/$VERSION"
-  echo "API Url: $API_URL"
+API_URL="$CM_URL/api/$VERSION"
+echo "API Url: $API_URL"
 
-  CLUSTER_HOSTS=(`curl -u $CM_USER:$CM_PASS "$API_URL/hosts" $INSECURE | grep 'hostname' | sed -e 's/.* : "\(.*\)".*/\1/g'`)
-fi 
+CLUSTER_HOSTS=(`curl -u $CM_USER:$CM_PASS "$API_URL/hosts" $INSECURE | grep 'hostname' | sed -e 's/.* : "\(.*\)".*/\1/g'`)
 
 . /usr/bin/bigtop-detect-javahome
 
@@ -40,4 +47,3 @@ TRUSTSTORE_PASS="changeit"
 CA_CERTIFICATE=ca-certificate.pem
 
 SUPPORTED_SERVICES=("hdfs" "yarn" "hue" "hive" "impala" "hbase" "oozie")
-
