@@ -64,7 +64,10 @@ generate_ca_signed()
   
   echo ""
   echo "Appending the intermediate CA certificate to the signed host certificate: $CERT_DIR/$(hostname -f).pem"
-  cat $CERT_DIR/intca.pem >> $CERT_DIR/$(hostname -f).pem
+  for cert_file in `ls $CERT_DIR/intca*.pem`
+  do
+    cat $cert_file >> $CERT_DIR/$(hostname -f).pem
+  done
   
   echo "Importing it into the keystore: $CERT_DIR/$(hostname -f).jks"
   $JAVA_HOME/bin/keytool -importcert -alias $(hostname -f) -file $CERT_DIR/$(hostname -f).pem \
