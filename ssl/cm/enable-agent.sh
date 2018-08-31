@@ -25,6 +25,6 @@ do
   MV_CMD="mv /tmp/config.ini.tmp3 /etc/cloudera-scm-agent/config.ini ; rm -f /tmp/config.ini.tmp*"
  
   # once all config updated, restart CM agent
-  ssh root@$host "$SED_CMD1 && $SED_CMD2 && $SED_CMD3 && $MV_CMD && systemctl restart cloudera-scm-agent"
+  ssh root@$host "$SED_CMD1 && $SED_CMD2 && $SED_CMD3 && $MV_CMD && service cloudera-scm-agent restart"
   echo "DONE"
 done

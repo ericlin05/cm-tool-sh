@@ -26,7 +26,7 @@ if [ $response == "yes" ]; then
 
   echo ""
   echo "Restarting CM server on host: $CM_HOST"
-  ssh root@$CM_HOST 'systemctl restart cloudera-scm-server'
+  ssh root@$CM_HOST 'service cloudera-scm-server restart'
   echo ""
   echo "After CM restarted, please log into CM and restart Cloudera Management services"
   echo ""

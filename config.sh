@@ -24,7 +24,12 @@ if [ "$host" != "" ]; then
   CLUSTER_HOSTS=(`curl -u $CM_USER:$CM_PASS "$API_URL/hosts" $INSECURE | grep 'hostname' | sed -e 's/.* : "\(.*\)".*/\1/g'`)
 fi 
 
-JAVA_HOME=`readlink -e /etc/alternatives/java | sed 's/\/jre\/bin\/java//g'`
+. /usr/bin/bigtop-detect-javahome
+
+if [ -z "${JAVA_HOME}" ]; then
+  JAVA_HOME=`readlink -e /etc/alternatives/java | sed 's/\/jre\/bin\/java//g'`
+fi 
+
 CERT_DIR="/opt/cloudera/security/jks"
 REMOTE_DIR="/tmp/certificate-install"
 

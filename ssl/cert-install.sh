@@ -38,7 +38,6 @@ run_on_host()
 # for CA signed certificates, simply use the rootca.pem file as certificate
 concat_cert_ca_signed()
 {
-  ssh root@$CM_HOST "cp $CERT_DIR/rootca.pem $CERT_DIR/$CA_CERTIFICATE"
   for host in "${CLUSTER_HOSTS[@]}"
   do
     ssh root@$host "cp $CERT_DIR/rootca.pem $CERT_DIR/$CA_CERTIFICATE"
@@ -47,12 +46,10 @@ concat_cert_ca_signed()
 
 concat_cert_self_signed()
 {
-  CM_HOST=$1
   CLUSTER_HOSTS=$2
  
   echo ""
   echo "Concatenating pem files together from all hosts"
-  ssh root@$CM_HOST "cat $CERT_DIR/server.pem" > /tmp/tmp-cert-concat.pem
   for host in "${CLUSTER_HOSTS[@]}"
   do
     ssh root@$host "cat $CERT_DIR/server.pem" >> /tmp/tmp-cert-concat.pem
@@ -61,7 +58,6 @@ concat_cert_self_signed()
   # after finished, re-upload them back to their original location
   echo ""
   echo "Re-uploading concatenated files back to each host"
-  scp /tmp/tmp-cert-concat.pem root@$CM_HOST:$CERT_DIR/$CA_CERTIFICATE
   for host in "${CLUSTER_HOSTS[@]}"
   do
     scp /tmp/tmp-cert-concat.pem root@$host:$CERT_DIR/$CA_CERTIFICATE
@@ -71,7 +67,6 @@ concat_cert_self_signed()
 }
 
 # generating certificates on each host
-run_on_host $CM_HOST $TYPE
 for host in "${CLUSTER_HOSTS[@]}"
 do
   run_on_host $host $TYPE
@@ -80,8 +75,8 @@ done
 # now after all certificates generated, we need to concat them all into one file
 # so that they can each server can be trusted with each other, needed for Hue, Impala etc
 if [ "$TYPE" == "ca" ]; then
-  concat_cert_ca_signed $CM_HOST ${CLUSTER_HOSTS[@]}
+  concat_cert_ca_signed ${CLUSTER_HOSTS[@]}
 else
-  concat_cert_self_signed $CM_HOST ${CLUSTER_HOSTS[@]}
+  concat_cert_self_signed ${CLUSTER_HOSTS[@]}
 fi
 
