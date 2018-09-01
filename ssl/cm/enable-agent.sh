@@ -36,14 +36,23 @@ do
   # Level 3 TLS for CM
   SED_CMD3=" | sed -e 's@.*client_key_file=.*@client_key_file=$CERT_DIR/server.key@g'"
   SED_CMD4=" | sed -e 's@.*client_cert_file=.*@client_cert_file=$CERT_DIR/server.pem@g'"
-  SED_CMD5=" | sed -e 's@.*client_keypw_file=.*@client_key_file=$AGENT_KEYPASS@g'"
-  SED_CMD6=" > /tmp/cm_config.ini.tmp"
+  SED_CMD5=" | sed -e 's@.*client_keypw_file=.*@client_keypw_file=$AGENT_KEYPASS@g'"
+  SED_CMD6=" | sed -e 's@.*server_host=.*@server_host=$(hostname -f)@g'"
+  SED_CMD7=" > /tmp/cm_config.ini.tmp"
 
-  SED_CMD7="mv /tmp/cm_config.ini.tmp /etc/cloudera-scm-agent/config.ini ; rm -f /tmp/cm_config.ini.tmp"
+  SED_CMD8="mv /tmp/cm_config.ini.tmp /etc/cloudera-scm-agent/config.ini ; rm -f /tmp/cm_config.ini.tmp"
 
-  CREATE_PW_CMD="echo \"$KEYSTORE_PASS\" > $AGENT_KEYPASS ; chown root:root $AGENT_KEYPASS ; chmod 440 $AGENT_KEYPASS"
+  CREATE_PW_CMD="echo -n \"$KEYSTORE_PASS\" > $AGENT_KEYPASS ; chown root:root $AGENT_KEYPASS ; chmod 440 $AGENT_KEYPASS"
  
   # once all config updated, restart CM agent
-  ssh root@$host "$CREATE_PW_CMD && $SED_CMD1 $SED_CMD2 $SED_CMD3 $SED_CMD4 $SED_CMD5 $SED_CMD6 && $SED_CMD7 && service cloudera-scm-agent restart"
+  echo "Running $CREATE_PW_CMD"
+  ssh root@$host "$CREATE_PW_CMD"
+
+  echo "Running $SED_CMD1 $SED_CMD2 $SED_CMD3 $SED_CMD4 $SED_CMD5 $SED_CMD6 $SED_CMD7 && $SED_CMD8"
+  ssh root@$host "$SED_CMD1 $SED_CMD2 $SED_CMD3 $SED_CMD4 $SED_CMD5 $SED_CMD6 $SED_CMD7 && $SED_CMD8"
+
+  echo "Running service cloudera-scm-agent restart"
+  ssh root@$host "service cloudera-scm-agent restart"
+
   echo "DONE"
 done
