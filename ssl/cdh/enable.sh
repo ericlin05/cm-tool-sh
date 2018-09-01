@@ -18,7 +18,7 @@ BASE_DIR=$(dirname $0)
 source $BASE_DIR/../../config.sh $HOST $TLS_ENABLED
 
 # checking the list of available clusters
-clusters=(`curl -u $CM_USER:$CM_PASS "$API_URL/clusters" $INSECURE | grep '"name"' | sed -e 's/.*"\(.*\)".*/\1/g'`)
+clusters=(`curl -s -u $CM_USER:$CM_PASS "$API_URL/clusters" $INSECURE | grep '"name"' | sed -e 's/.*"\(.*\)".*/\1/g'`)
 
 echo "I have detected following clusters:"
 echo ""
@@ -46,7 +46,7 @@ if [ $tLen -gt 1 ]; then
   CLUSTER_NAME=${clusters[$choice]}
 else
 # otherwise, use the one available
-  CLUSTER_NAME=${#clusters[0]}
+  CLUSTER_NAME=${clusters[0]}
 fi
 
 echo ""
@@ -62,7 +62,7 @@ fi
 
 # retrieving the list of available services in the cluster chosen
 # so that we can ask user to choose from
-available_services=(`curl -u $CM_USER:$CM_PASS "$API_URL/clusters/$CLUSTER_NAME/services" $INSECURE | grep '"serviceUrl"' | sed -e 's@.*/\(.*\)".*@\1@g'`)
+available_services=(`curl -s -u $CM_USER:$CM_PASS "$API_URL/clusters/$CLUSTER_NAME/services" $INSECURE | grep '"serviceUrl"' | sed -e 's@.*/\(.*\)".*@\1@g'`)
 
 echo "I have detected following services available for cluster \"$CLUSTER_NAME\":"
 
@@ -129,13 +129,13 @@ for service in ${CHOSEN_SERVICES[@]}
 do
   echo $service
   if [ -d $BASE_DIR/$service ]; then
-    echo "Running bash $BASE_DIR/$service/update-cm-config.sh $HOST $CLUSTER_NAME $service_name $TLS_ENABLED"
-    bash $BASE_DIR/$service/update-cm-config.sh $HOST $CLUSTER_NAME $service_name $TLS_ENABLED
+    echo "Running bash $BASE_DIR/$service/update-cm-config.sh $HOST $CLUSTER_NAME $service $TLS_ENABLED"
+    bash $BASE_DIR/$service/update-cm-config.sh $HOST $CLUSTER_NAME $service $TLS_ENABLED
   fi
 done
 
 echo ""
 echo "Restarting Cluster"
-curl -X POST -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE \
+curl -s -X POST -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE \
   -d "{ \"restartOnlyStaleServices\": \"true\", \"redeployClientConfiguration\": \"true\" }" \
   "$API_URL/clusters/$CLUSTER_NAME/commands/restart"

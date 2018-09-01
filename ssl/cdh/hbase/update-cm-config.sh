@@ -16,23 +16,23 @@ source $BASE_DIR/../../../config.sh $CM_HOST $TLS_ENABLED
 echo ""
 echo "Updating HBase SSL configurations"
 echo "$API_URL/cm/config $CM_USER:$CM_PASS $INSECURE"
-curl -X PUT -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE \
+curl -s -X PUT -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE \
   -d "{ \"items\": [ { \"name\": \"ssl_server_keystore_location\", \"value\": \"$CERT_DIR/server.jks\" }, { \"name\": \"ssl_server_keystore_keypassword\", \"value\": \"$KEYSTORE_PASS\" }, { \"name\": \"ssl_server_keystore_password\", \"value\": \"$KEYSTORE_PASS\" }, { \"name\": \"hbase_hadoop_ssl_enabled\", \"value\": \"true\" } ] }" \
   "$API_URL/clusters/$CLUSTER/services/$SERVICE/config"
 
 echo ""
 echo "Updating HBase Rest Server Config to enable SSL"
-ROLE_GROUP_ID=`curl -u $CM_USER:$CM_PASS $INSECURE "$API_URL/clusters/$CLUSTER/services/$SERVICE/roleConfigGroups" | grep name | grep '\-HBASERESTSERVER\-' | sed -e 's/.*"\(.*HBASERESTSERVER.*\)".*/\1/g'`
+ROLE_GROUP_ID=`curl -s -u $CM_USER:$CM_PASS $INSECURE "$API_URL/clusters/$CLUSTER/services/$SERVICE/roleConfigGroups" | grep name | grep '\-HBASERESTSERVER\-' | sed -e 's/.*"\(.*HBASERESTSERVER.*\)".*/\1/g'`
 
-curl -X PUT -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE \
+curl -s -X PUT -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE \
   -d "{ \"items\": [ { \"name\": \"hbase_restserver_keystore_file\", \"value\": \"$CERT_DIR/server.jks\" }, { \"name\": \"hbase_restserver_keystore_keypassword\", \"value\": \"$KEYSTORE_PASS\" }, { \"name\": \"hbase_restserver_keystore_password\", \"value\": \"$KEYSTORE_PASS\" } ] }" \
   "$API_URL/clusters/$CLUSTER/services/$SERVICE/roleConfigGroups/$ROLE_GROUP_ID/config"
 
 echo ""
 echo "Updating HBase Thrift Server Config to enable SSL"
-ROLE_GROUP_ID=`curl -u $CM_USER:$CM_PASS $INSECURE "$API_URL/clusters/$CLUSTER/services/$SERVICE/roleConfigGroups" | grep name | grep '\-HBASETHRIFTSERVER\-' | sed -e 's/.*"\(.*HBASETHRIFTSERVER.*\)".*/\1/g'`
+ROLE_GROUP_ID=`curl -s -u $CM_USER:$CM_PASS $INSECURE "$API_URL/clusters/$CLUSTER/services/$SERVICE/roleConfigGroups" | grep name | grep '\-HBASETHRIFTSERVER\-' | sed -e 's/.*"\(.*HBASETHRIFTSERVER.*\)".*/\1/g'`
 
-curl -X PUT -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE \
+curl -s -X PUT -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE \
   -d "{ \"items\": [ { \"name\": \"hbase_thriftserver_http_keystore_file\", \"value\": \"$CERT_DIR/server.jks\" }, { \"name\": \"hbase_thriftserver_http_keystore_keypassword\", \"value\": \"$KEYSTORE_PASS\" }, { \"name\": \"hbase_thriftserver_http_keystore_password\", \"value\": \"$KEYSTORE_PASS\" }, { \"name\": \"hbase_thriftserver_http_use_ssl\", \"value\": \"true\" } ] }" \
   "$API_URL/clusters/$CLUSTER/services/$SERVICE/roleConfigGroups/$ROLE_GROUP_ID/config"
 
