@@ -30,4 +30,3 @@ curl -s -X PUT -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE
 
 echo ""
 echo "DONE"
-echo ""

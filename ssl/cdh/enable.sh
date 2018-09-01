@@ -107,7 +107,7 @@ do
 done
 
 if [ $choice -eq $choiceLimit ]; then
-  CHOSEN_SERVICES=${services[@]}
+  CHOSEN_SERVICES=(${services[@]})
 else
   choice=$(( choice-1 ))
   CHOSEN_SERVICES=(${services[$choice]})
@@ -126,16 +126,23 @@ if [ "$confirm" != "yes" ]; then
   exit 0
 fi
 
+num_services=0
 for service in ${CHOSEN_SERVICES[@]}
 do
-  echo $service
   if [ -d $BASE_DIR/$service ]; then
+    echo ""
+    echo "##############################################################"
+    echo "Updating $service.."
     echo "Running bash $BASE_DIR/$service/update-cm-config.sh $HOST $CLUSTER_NAME $service $TLS_ENABLED"
     bash $BASE_DIR/$service/update-cm-config.sh $HOST $CLUSTER_NAME $service $TLS_ENABLED
+    echo "##############################################################"
+    echo ""
+
+    num_services=$(( num_services+1 ))
   fi
 done
 
-if [ ${#CHOSEN_SERVICES[@]} -eq 1 ]; then
+if [ $num_services -eq 1 ]; then
   echo ""
   echo "Restarting Service ${CHOSEN_SERVICES[0]}"
   curl -s -X POST -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE \
