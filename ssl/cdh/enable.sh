@@ -14,6 +14,8 @@ fi
 HOST=$1
 TLS_ENABLED=$2
 
+NUMBER_REGEXP='^[0-9]$'
+
 BASE_DIR=$(dirname $0)
 source $BASE_DIR/../../config.sh $HOST $TLS_ENABLED
 
@@ -36,7 +38,7 @@ if [ $tLen -gt 1 ]; then
   read choice
   
   let choiceLimit=tLen
-  while [ $choice -gt $choiceLimit ] || [ $choice -lt 1 ]
+  while [[ $choice =~ ${NUMBER_REGEXP} ]] || [ $choice -gt $choiceLimit ] || [ $choice -lt 1 ]
   do
     echo -n "Bad input, try again: "
     read choice
@@ -99,9 +101,9 @@ echo -n "Please select which service to use: "
 read choice
 
 let choiceLimit=tLen+1
-while [ $choice -gt $choiceLimit ] || [ $choice -lt 1 ]
+while ( ! [[ $choice =~ ${NUMBER_REGEXP} ]] ) || [ $choice -gt $choiceLimit ] || [ $choice -lt 1 ]
 do
-  echo -n "Bad input, try again: "
+  echo -n "Bad input, try again (integer please): "
   read choice
 done
 
@@ -134,8 +136,17 @@ do
   fi
 done
 
-echo ""
-echo "Restarting Cluster"
-curl -s -X POST -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE \
-  -d "{ \"restartOnlyStaleServices\": \"true\", \"redeployClientConfiguration\": \"true\" }" \
-  "$API_URL/clusters/$CLUSTER_NAME/commands/restart"
+if [ ${#CHOSEN_SERVICES[@]} -eq 1 ]; then
+  echo ""
+  echo "Restarting Service ${CHOSEN_SERVICES[0]}"
+  curl -s -X POST -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE \
+    "$API_URL/clusters/$CLUSTER_NAME/services/$service/commands/restart"
+else
+  echo ""
+  echo "Restarting Cluster"
+  curl -s -X POST -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE \
+    -d "{ \"restartOnlyStaleServices\": \"true\", \"redeployClientConfiguration\": \"true\" }" \
+    "$API_URL/clusters/$CLUSTER_NAME/commands/restart"
+fi
+
+echo "DONE"
