@@ -114,7 +114,7 @@ echo "==========================================================================
 echo "Generating Java KeyStore to file: $CERT_DIR/$(hostname -f).jks"
 keytool -genkeypair -alias $(hostname -f) -keyalg RSA -keystore $CERT_DIR/$(hostname -f).jks \
   -keysize 2048 -dname "CN=$(hostname -f),OU=Support,O=Cloudera,L=Melbourne,ST=Victoria,C=AU" \
-  -ext san=dns:$(hostname -f) -storepass $KEYSTORE_PASS -keypass $KEYSTORE_PASS
+  -ext san=dns:$(hostname -f),dns:$(hostname -s),ip:$(hostname -i) -storepass $KEYSTORE_PASS -keypass $KEYSTORE_PASS
 
 # Copy the JDK cacerts file to jssecacerts as follows
 # The Oracle JDK uses the jssecacerts file for its default truststore if it exists. 
