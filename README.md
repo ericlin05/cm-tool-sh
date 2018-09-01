@@ -19,6 +19,8 @@ This tool is developed for ease of managing CDH cluster via Cloudera Manager API
 
 This tool needs to be run from a host within the cluster, ideally the Cloudera Manager server host. 
 
+It uses Unix's "curl" command to communicate with Cloudera Manager API, so it must be installed. 
+
 It uses SSH to run commands remotely to generate certificates and update agent configuration files using
 "root" user, because we need to update and restart services that requires "root" privilege, so to avoid 
 being asked to enter passwords, it is advised to have passwordless setup from the host you want to run 
@@ -40,8 +42,8 @@ To enable SSL/TLS for the cluster, there are three steps:
   ```bash
     bash ssl/cert-install.sh CM_HOST TLS_ENABLED TYPE
     
-    CM_HOST:     Cloudera Manager Host URL, without port number"
-    TLS_ENABLED: Whether the current Cloudera Manager already has TLS enabled or not, 1 or 0"
+    CM_HOST:     Cloudera Manager Host URL, without port number
+    TLS_ENABLED: Whether the current Cloudera Manager already has TLS enabled or not, 1 or 0
     TYPE:        Either "ca" for CA Signed Certificate or "self" for Self-Signed Certificate
   ```
   
@@ -54,19 +56,19 @@ To enable SSL/TLS for the cluster, there are three steps:
   
   It will display you with the Public Key output and you will need to generate the Certificate 
   file from your Internal CA system, copy and paste the result into the script output when prompted. 
-  This process need to be done per host, so please be patient.
+  This process needs to be done per host, so please be patient.
   
 * Update Cloudera Manager Server and Agent Configuration to enable SSL/TLS
   
   ```bash
     bash ssl/cm/enable.sh CM_HOST TLS_ENABLED
   
-    CM_HOST:     Cloudera Manager Host URL, without port number"
-    TLS_ENABLED: Whether the current Cloudera Manager already has TLS enabled or not, 1 or 0"
+    CM_HOST:     Cloudera Manager Host URL, without port number
+    TLS_ENABLED: Whether the current Cloudera Manager already has TLS enabled or not, 1 or 0
   ```
   
   This script will update CM server and agent configurations to enable SSL/TLS, 
-  restart all CM agent and server processes automatically.
+  restart all CM agents and server processes automatically.
   
   It assumes that the SSL Certificates are generated from first step.
    
@@ -75,8 +77,8 @@ To enable SSL/TLS for the cluster, there are three steps:
   ```bash
     bash ssl/cdh/enable.sh CM_HOST TLS_ENABLED
     
-    CM_HOST:     Cloudera Manager Host URL, without port number"
-    TLS_ENABLED: Whether the current Cloudera Manager already has TLS enabled or not, 1 or 0"
+    CM_HOST:     Cloudera Manager Host URL, without port number
+    TLS_ENABLED: Whether the current Cloudera Manager already has TLS enabled or not, 1 or 0
   ```
    
   This script will automatically detect the number of clusters and services managed by Cloudera Manager and 
