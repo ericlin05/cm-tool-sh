@@ -35,7 +35,7 @@ echo ""
 
 echo "Enabling CM Agnet TLS:"
 curl -s -X PUT -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE \
-  -d '{ "items": [ { "name": "AGENT_TLS", "value": "true" } ] }' \
+  -d '{ "items": [ { "name": "AGENT_TLS", "value": "true" }, { "name": "NEED_AGENT_VALIDATION", "value": "true" } ] }' \
   "$API_URL/cm/config"
 
 echo ""

@@ -47,3 +47,5 @@ TRUSTSTORE_PASS="changeit"
 CA_CERTIFICATE=ca-certificate.pem
 
 SUPPORTED_SERVICES=("hdfs" "yarn" "hue" "hive" "impala" "hbase" "oozie")
+
+AGENT_KEYPASS="/etc/cloudera-scm-agent/agentkey.pw"
