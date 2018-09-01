@@ -27,7 +27,7 @@ echo ""
 tLen=${#clusters[@]}
 for (( i=0; i<${tLen}; i++ ));
 do
-  let a=i+1
+  a=$(( i+1 ))
   echo "$a) ${clusters[$i]}" 
 done
 
@@ -37,14 +37,13 @@ if [ $tLen -gt 1 ]; then
   echo -n "Please select which one to use: "
   read choice
   
-  let choiceLimit=tLen
-  while [[ $choice =~ ${NUMBER_REGEXP} ]] || [ $choice -gt $choiceLimit ] || [ $choice -lt 1 ]
+  while ( ! [[ "$choice" =~ ${NUMBER_REGEXP} ]] ) || [ $choice -gt $tLen ] || [ $choice -lt 1 ]
   do
-    echo -n "Bad input, try again: "
+    echo -n "Bad input, try again (integer please): "
     read choice
   done
   
-  let choice=choice-1
+  choice=$(( choice-1 ))
   CLUSTER_NAME=${clusters[$choice]}
 else
 # otherwise, use the one available
@@ -79,7 +78,7 @@ do
     m=`echo $service | grep "^$s_service" | wc -l`
     if [ "$m" == "1" ]; then
       services[$i]=$s_service
-      let i=i+1
+      i=$(( i+1 ))
     fi
   done
 done
@@ -89,18 +88,18 @@ echo ""
 tLen=${#services[@]}
 for (( i=0; i<${tLen}; i++ ));
 do
-  let a=i+1
+  a=$(( i+1 ))
   echo "$a) ${services[$i]}" 
 done
 
-let a=i+1
+a=$(( i+1 ))
 echo "$a) all"
 
 echo ""
 echo -n "Please select which service to use: "
 read choice
 
-let choiceLimit=tLen+1
+choiceLimit=$(( tLen+1 ))
 while ( ! [[ $choice =~ ${NUMBER_REGEXP} ]] ) || [ $choice -gt $choiceLimit ] || [ $choice -lt 1 ]
 do
   echo -n "Bad input, try again (integer please): "
@@ -110,7 +109,7 @@ done
 if [ $choice -eq $choiceLimit ]; then
   CHOSEN_SERVICES=${services[@]}
 else
-  let choice=choice-1
+  choice=$(( choice-1 ))
   CHOSEN_SERVICES=(${services[$choice]})
 fi
 
