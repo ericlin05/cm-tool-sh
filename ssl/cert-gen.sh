@@ -116,7 +116,7 @@ mkdir -p $CERT_DIR
 echo ""
 echo "======================================================================================================"
 echo "Generating Java KeyStore to file: $CERT_DIR/$(hostname -f).jks"
-keytool -genkeypair -alias $(hostname -f) -keyalg RSA -keystore $CERT_DIR/$(hostname -f).jks \
+$JAVA_HOME/bin/keytool -genkeypair -alias $(hostname -f) -keyalg RSA -keystore $CERT_DIR/$(hostname -f).jks \
   -keysize 2048 -dname "CN=$(hostname -f),OU=Support,O=Cloudera,L=Melbourne,ST=Victoria,C=AU" \
   -ext san=dns:$(hostname -f),dns:$(hostname -s),ip:$(hostname -i) -storepass $KEYSTORE_PASS -keypass $KEYSTORE_PASS
 
@@ -146,7 +146,7 @@ ln -s $CERT_DIR/$(hostname -f).jks $CERT_DIR/server.jks
 # 1. Export the private key and certificate command line:
 echo ""
 echo "Generating private key file from keystore"
-keytool -importkeystore -srckeystore $CERT_DIR/server.jks \
+$JAVA_HOME/bin/keytool -importkeystore -srckeystore $CERT_DIR/server.jks \
 -srcstorepass $KEYSTORE_PASS -srckeypass $KEYSTORE_PASS -destkeystore $CERT_DIR/$(hostname -f).p12 \
 -deststoretype PKCS12 -srcalias $(hostname -f) -deststorepass $KEYSTORE_PASS -destkeypass $KEYSTORE_PASS
 
