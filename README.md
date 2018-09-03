@@ -87,4 +87,13 @@ To enable SSL/TLS for the cluster, there are three steps:
   After configurations are updated, it will go ahead to restart the cluster at the end.
   
   It also assumes that the SSL Certificates are generated from first step.
-  
+ 
+ ## TODO
+ 
+ * Support disablement of SSL/TLS for any service
+ * Support SSL/TLS for other CDH components
+ * Support enabling HA services for various CDH components
+ * Support enabling Kerberos for CDH
+ * Support enabling Sentry for various CDH components
+ * More to come... 
+ 
