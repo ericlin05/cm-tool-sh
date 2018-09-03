@@ -71,6 +71,9 @@ To enable SSL/TLS for the cluster, there are three steps:
   restart all CM agents and server processes automatically.
   
   It assumes that the SSL Certificates are generated from first step.
+  
+  After Cloudera Manager restarted, we need to log into CM and then restart Cloudera Management Services 
+  manually, it is on the todo list to have this done automatically, see below in TODO section.
    
 * Update CDH configurations in Cloudera Manager to enable SSL for each services
 
@@ -95,5 +98,6 @@ To enable SSL/TLS for the cluster, there are three steps:
  * Support enabling HA services for various CDH components
  * Support enabling Kerberos for CDH
  * Support enabling Sentry for various CDH components
+ * Need to restart CM Management Services automatically, currently needs to be manually done after CM restart
  * More to come... 
  
