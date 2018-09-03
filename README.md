@@ -26,14 +26,17 @@ It uses SSH to run commands remotely to generate certificates and update agent c
 being asked to enter passwords, it is advised to have passwordless setup from the host you want to run 
 the tool to all other hosts. 
 
-This can be achieved by:
+I have provided a simple setup script to do this for you:
 
 ```bash
-ssh-keygen
-ssh-copy-id root@host1
-ssh-copy-id root@host2
-ssh-copy-id root@host3
+bash setup.sh CM_HOST TLS_ENABLED
+
+CM_HOST:     Cloudera Manager Host URL, without port number
+TLS_ENABLED: Whether the current Cloudera Manager already has TLS enabled or not, 1 or 0
 ```
+
+Above script will help you to generate the public/private key pair on the CM host and then copy the IDs 
+to the remote server to setup.
 
 To enable SSL/TLS for the cluster, there are three steps:
 
