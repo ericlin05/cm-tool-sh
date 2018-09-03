@@ -5,17 +5,21 @@ set -e
 
 if [ "$1" == "-h" ] || [ "$1" == "-help" ] || [ "$1" == "--help" ]; then
   echo ""
-  echo "Usage: bash cert-gen.sh TYPE"
+  echo "Usage: bash cert-gen.sh CM_HOST TYPE"
+  echo "  CM_HOST:     Cloudera Manager Host URL, without port number"
+  echo "  TLS_ENABLED: Whether Cloudera Manager already has TLS enabled or not"
   echo "  TYPE: either \"ca\" for CA Signed Certificate or \"self\" for Self-Signed Certificate"
   echo ""
   exit
 fi
 
-TYPE="$1"
+CM_HOST="$1"
+TLS_ENABLED="$2"
+TYPE="$3"
 
 BASE_DIR=$(dirname $0)
 CA_DIR=$BASE_DIR/ca
-source $BASE_DIR/../config.sh ""
+source $BASE_DIR/../config.sh $CM_HOST $TLS_ENABLED
 
 echo "Extracting Java Home path at: $JAVA_HOME"
 

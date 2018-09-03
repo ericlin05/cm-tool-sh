@@ -26,7 +26,10 @@ fi
 run_on_host()
 {
   host=$1
-  cert_type=$2
+  cm_host=$2
+  tls_enabled=$3
+  cert_type=$4
+
   echo ""
   echo "========================================================"
   echo "Running on host: $host"
@@ -36,8 +39,8 @@ run_on_host()
   scp -r $BASE_DIR/../* root@$host:$REMOTE_DIR
 
   echo ""
-  echo "Running command: bash $REMOTE_DIR/ssl/cert-gen.sh $cert_type"
-  ssh root@$host "bash $REMOTE_DIR/ssl/cert-gen.sh $cert_type" 
+  echo "Running command: bash $REMOTE_DIR/ssl/cert-gen.sh $cm_host $tls_enabled $cert_type"
+  ssh root@$host "bash $REMOTE_DIR/ssl/cert-gen.sh $cm_host $tls_enabled $cert_type"
 
   echo ""
   echo "Cleaning up files"
@@ -79,7 +82,7 @@ concat_cert_self_signed()
 # generating certificates on each host
 for host in "${CLUSTER_HOSTS[@]}"
 do
-  run_on_host $host $TYPE
+  run_on_host $host $CM_HOST $TLS_ENABLED $TYPE
 done
 
 # now after all certificates generated, we need to concat them all into one file
