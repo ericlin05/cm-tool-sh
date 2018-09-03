@@ -26,7 +26,7 @@ curl -s -S -X PUT -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSEC
   "$API_URL/cm/config"
 
 echo ""
-echo "Updating TrustStore Location and Password"
+echo "Updating TrustStore Location and Password For Cloudera Management services"
 curl -s -S -X PUT -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE \
   -d "{ \"items\": [ { \"name\": \"ssl_client_truststore_location\", \"value\": \"$JAVA_HOME/jre/lib/security/jssecacerts\" }, { \"name\": \"ssl_client_truststore_password\", \"value\": \"changeit\" } ] }" \
   "$API_URL/cm/service/config"
