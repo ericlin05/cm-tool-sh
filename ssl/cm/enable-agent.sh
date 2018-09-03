@@ -45,13 +45,13 @@ do
   CREATE_PW_CMD="echo -n \"$KEYSTORE_PASS\" > $AGENT_KEYPASS ; chown root:root $AGENT_KEYPASS ; chmod 440 $AGENT_KEYPASS"
  
   # once all config updated, restart CM agent
-  echo "Running $CREATE_PW_CMD"
+  #echo "Running $CREATE_PW_CMD"
   ssh root@$host "$CREATE_PW_CMD"
 
-  echo "Running $SED_CMD1 $SED_CMD2 $SED_CMD3 $SED_CMD4 $SED_CMD5 $SED_CMD6 $SED_CMD7 && $SED_CMD8"
+  #echo "Running $SED_CMD1 $SED_CMD2 $SED_CMD3 $SED_CMD4 $SED_CMD5 $SED_CMD6 $SED_CMD7 && $SED_CMD8"
   ssh root@$host "$SED_CMD1 $SED_CMD2 $SED_CMD3 $SED_CMD4 $SED_CMD5 $SED_CMD6 $SED_CMD7 && $SED_CMD8"
 
-  echo "Running service cloudera-scm-agent restart"
+  #echo "Running service cloudera-scm-agent restart"
   ssh root@$host "service cloudera-scm-agent restart"
 
   echo "DONE"
