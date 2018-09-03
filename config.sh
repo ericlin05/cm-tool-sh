@@ -23,13 +23,13 @@ if [ $is_secure == 1 ]; then
   INSECURE=" --insecure"
 fi
 
-VERSION=`curl -s -u $CM_USER:$CM_PASS "$CM_URL/api/version" $INSECURE`
+VERSION=`curl -s -S -u $CM_USER:$CM_PASS "$CM_URL/api/version" $INSECURE`
 echo "API Version is: $VERSION"
 
 API_URL="$CM_URL/api/$VERSION"
 echo "API Url: $API_URL"
 
-CLUSTER_HOSTS=(`curl -s -u $CM_USER:$CM_PASS "$API_URL/hosts" $INSECURE | grep 'hostname' | sed -e 's/.* : "\(.*\)".*/\1/g'`)
+CLUSTER_HOSTS=(`curl -s -S -u $CM_USER:$CM_PASS "$API_URL/hosts" $INSECURE | grep 'hostname' | sed -e 's/.* : "\(.*\)".*/\1/g'`)
 
 . /usr/bin/bigtop-detect-javahome
 

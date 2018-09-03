@@ -20,7 +20,7 @@ BASE_DIR=$(dirname $0)
 source $BASE_DIR/../../config.sh $HOST $TLS_ENABLED
 
 # checking the list of available clusters
-clusters=(`curl -s -u $CM_USER:$CM_PASS "$API_URL/clusters" $INSECURE | grep '"name"' | sed -e 's/.*"\(.*\)".*/\1/g'`)
+clusters=(`curl -s -S -u $CM_USER:$CM_PASS "$API_URL/clusters" $INSECURE | grep '"name"' | sed -e 's/.*"\(.*\)".*/\1/g'`)
 
 echo "I have detected following clusters:"
 echo ""
@@ -63,7 +63,7 @@ fi
 
 # retrieving the list of available services in the cluster chosen
 # so that we can ask user to choose from
-available_services=(`curl -s -u $CM_USER:$CM_PASS "$API_URL/clusters/$CLUSTER_NAME/services" $INSECURE | grep '"serviceUrl"' | sed -e 's@.*/\(.*\)".*@\1@g'`)
+available_services=(`curl -s -S -u $CM_USER:$CM_PASS "$API_URL/clusters/$CLUSTER_NAME/services" $INSECURE | grep '"serviceUrl"' | sed -e 's@.*/\(.*\)".*@\1@g'`)
 
 echo "I have detected following services available for cluster \"$CLUSTER_NAME\":"
 
@@ -145,12 +145,12 @@ done
 if [ $num_services -eq 1 ]; then
   echo ""
   echo "Restarting Service ${CHOSEN_SERVICES[0]}"
-  curl -s -X POST -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE \
+  curl -s -S -X POST -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE \
     "$API_URL/clusters/$CLUSTER_NAME/services/$service/commands/restart"
 else
   echo ""
   echo "Restarting Cluster"
-  curl -s -X POST -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE \
+  curl -s -S -X POST -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE \
     -d "{ \"restartOnlyStaleServices\": \"true\", \"redeployClientConfiguration\": \"true\" }" \
     "$API_URL/clusters/$CLUSTER_NAME/commands/restart"
 fi

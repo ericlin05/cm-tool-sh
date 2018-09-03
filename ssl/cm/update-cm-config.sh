@@ -21,20 +21,20 @@ source $BASE_DIR/../../config.sh $CM_HOST $TLS_ENABLED
 echo ""
 echo "Updating CM KeyStore Path and Password"
 echo "$API_URL/cm/config $CM_USER:$CM_PASS $INSECURE"
-curl -s -X PUT -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE \
+curl -s -S -X PUT -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE \
   -d "{ \"items\": [ { \"name\": \"KEYSTORE_PATH\", \"value\": \"$CERT_DIR/server.jks\" }, { \"name\": \"KEYSTORE_PASSWORD\", \"value\": \"cloudera\" }, { \"name\": \"WEB_TLS\", \"value\": \"true\" } ] }" \
   "$API_URL/cm/config"
 
 echo ""
 echo "Updating TrustStore Location and Password"
-curl -s -X PUT -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE \
+curl -s -S -X PUT -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE \
   -d "{ \"items\": [ { \"name\": \"ssl_client_truststore_location\", \"value\": \"$JAVA_HOME/jre/lib/security/jssecacerts\" }, { \"name\": \"ssl_client_truststore_password\", \"value\": \"changeit\" } ] }" \
   "$API_URL/cm/service/config"
 
 echo ""
 
 echo "Enabling CM Agnet TLS:"
-curl -s -X PUT -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE \
+curl -s -S -X PUT -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE \
   -d '{ "items": [ { "name": "AGENT_TLS", "value": "true" }, { "name": "NEED_AGENT_VALIDATION", "value": "true" } ] }' \
   "$API_URL/cm/config"
 
