@@ -27,7 +27,8 @@ BASE_DIR=$(dirname $0)
 sh $BASE_DIR/update-cm-config.sh $CM_HOST $TLS_ENABLED
 
 echo ""
-echo "Please make sure that above commands returned correctly and confirm \"yes\" to continue restarting CM server and agents"
+echo "Please make sure that above commands returned correctly."
+echo -n "And confirm \"yes\" to continue restarting CM server and agents: "
 read response
 
 if [ $response == "yes" ]; then

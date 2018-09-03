@@ -37,7 +37,7 @@ do
   SED_CMD3=" | sed -e 's@.*client_key_file=.*@client_key_file=$CERT_DIR/server.key@g'"
   SED_CMD4=" | sed -e 's@.*client_cert_file=.*@client_cert_file=$CERT_DIR/server.pem@g'"
   SED_CMD5=" | sed -e 's@.*client_keypw_file=.*@client_keypw_file=$AGENT_KEYPASS@g'"
-  SED_CMD6=" | sed -e 's@.*server_host=.*@server_host=$(hostname -f)@g'"
+  SED_CMD6=" | sed -e 's@.*server_host=.*@server_host=$CM_HOST@g'"
   SED_CMD7=" > /tmp/cm_config.ini.tmp"
 
   SED_CMD8="mv /tmp/cm_config.ini.tmp /etc/cloudera-scm-agent/config.ini ; rm -f /tmp/cm_config.ini.tmp"
