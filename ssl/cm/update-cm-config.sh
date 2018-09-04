@@ -22,13 +22,13 @@ echo ""
 echo "Updating CM KeyStore Path and Password"
 echo "$API_URL/cm/config $CM_USER:$CM_PASS $INSECURE"
 curl -s -S -X PUT -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE \
-  -d "{ \"items\": [ { \"name\": \"KEYSTORE_PATH\", \"value\": \"$CERT_DIR/server.jks\" }, { \"name\": \"KEYSTORE_PASSWORD\", \"value\": \"cloudera\" }, { \"name\": \"WEB_TLS\", \"value\": \"true\" } ] }" \
+  -d "{ \"items\": [ { \"name\": \"KEYSTORE_PATH\", \"value\": \"$CERT_DIR/server.jks\" }, { \"name\": \"KEYSTORE_PASSWORD\", \"value\": \"$KEYSTORE_PASS\" }, { \"name\": \"WEB_TLS\", \"value\": \"true\" }, { \"name\": \"TRUSTSTORE_PATH\", \"value\": \"$JAVA_HOME/jre/lib/security/jssecacerts\" }, { \"name\": \"TRUSTSTORE_PASSWORD\", \"value\": \"$TRUSTSTORE_PASS\" } ] }" \
   "$API_URL/cm/config"
 
 echo ""
 echo "Updating TrustStore Location and Password For Cloudera Management services"
 curl -s -S -X PUT -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE \
-  -d "{ \"items\": [ { \"name\": \"ssl_client_truststore_location\", \"value\": \"$JAVA_HOME/jre/lib/security/jssecacerts\" }, { \"name\": \"ssl_client_truststore_password\", \"value\": \"changeit\" } ] }" \
+  -d "{ \"items\": [ { \"name\": \"ssl_client_truststore_location\", \"value\": \"$JAVA_HOME/jre/lib/security/jssecacerts\" }, { \"name\": \"ssl_client_truststore_password\", \"value\": \"$TRUSTSTORE_PASS\" } ] }" \
   "$API_URL/cm/service/config"
 
 echo ""
