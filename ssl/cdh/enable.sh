@@ -67,9 +67,8 @@ available_services=(`curl -s -S -u $CM_USER:$CM_PASS "$API_URL/clusters/$CLUSTER
 
 echo "I have detected following services available for cluster \"$CLUSTER_NAME\":"
 
-i=0
 # the final list of services to be enabled with SSL
-services=()
+declare -A services
 for service in ${available_services[@]}
 do
   for s_service in ${SUPPORTED_SERVICES[@]}
@@ -77,44 +76,42 @@ do
     # checking if the supported service is in the list
     m=`echo $service | grep "^$s_service" | wc -l`
     if [ "$m" == "1" ]; then
-      services[$i]=$s_service
-      i=$(( i+1 ))
+      services[$s_service]=$service
     fi
   done
 done
 
 # printing out the choices available
 echo ""
-tLen=${#services[@]}
-for (( i=0; i<${tLen}; i++ ));
+for key in ${!services[@]}
 do
-  a=$(( i+1 ))
-  echo "$a) ${services[$i]}" 
+  echo "$key"
 done
 
-a=$(( i+1 ))
-echo "$a) all"
+echo "all"
 
 echo ""
 echo -n "Please select which service to use: "
 read choice
 
-choiceLimit=$(( tLen+1 ))
-while ( ! [[ $choice =~ ${NUMBER_REGEXP} ]] ) || [ $choice -gt $choiceLimit ] || [ $choice -lt 1 ]
+while [ -z ${services["$choice"]} ] && [ "$choice" != "all" ]
 do
-  echo -n "Bad input, try again (integer please): "
+  echo -n "Bad input, try again: "
   read choice
 done
 
-if [ $choice -eq $choiceLimit ]; then
-  CHOSEN_SERVICES=(${services[@]})
+declare -A CHOSEN_SERVICES
+if [ "$choice" == "all" ]; then
+  for key in ${!services[@]}
+  do
+    CHOSEN_SERVICES[$key]=${services[$key]}
+  done
 else
-  choice=$(( choice-1 ))
-  CHOSEN_SERVICES=(${services[$choice]})
+  CHOSEN_SERVICES["$choice"]=${services["$choice"]}
 fi
 
 echo ""
-echo ${CHOSEN_SERVICES[*]}
+echo ${!CHOSEN_SERVICES[@]}
 echo ""
 echo -n "You have chosen to enable SSL/TLS for above service(s) (yes or no): "
 read confirm
@@ -127,14 +124,14 @@ if [ "$confirm" != "yes" ]; then
 fi
 
 num_services=0
-for service in ${CHOSEN_SERVICES[@]}
+for service in ${!CHOSEN_SERVICES[@]}
 do
   if [ -d $BASE_DIR/$service ]; then
     echo ""
     echo "##############################################################"
     echo "Updating $service.."
-    echo "Running bash $BASE_DIR/$service/update-cm-config.sh $HOST $CLUSTER_NAME $service $TLS_ENABLED"
-    bash $BASE_DIR/$service/update-cm-config.sh $HOST $CLUSTER_NAME $service $TLS_ENABLED
+    echo "Running bash $BASE_DIR/$service/update-cm-config.sh $HOST $CLUSTER_NAME ${CHOSEN_SERVICES[$service]} $TLS_ENABLED"
+    bash $BASE_DIR/$service/update-cm-config.sh $HOST $CLUSTER_NAME ${CHOSEN_SERVICES[$service]} $TLS_ENABLED
     echo "##############################################################"
     echo ""
 
@@ -144,7 +141,7 @@ done
 
 if [ $num_services -eq 1 ]; then
   echo ""
-  echo "Restarting Service ${CHOSEN_SERVICES[0]}"
+  echo "Restarting Service ${CHOSEN_SERVICES[$choice]}"
   curl -s -S -X POST -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE \
     "$API_URL/clusters/$CLUSTER_NAME/services/$service/commands/restart"
 else
