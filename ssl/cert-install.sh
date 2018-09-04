@@ -51,6 +51,8 @@ run_on_host()
 # for CA signed certificates, simply use the rootca.pem file as certificate
 concat_cert_ca_signed()
 {
+  echo ""
+  echo "Copying the rootca.pem file to each host under $CERT_DIR/$CA_CERTIFICATE"
   for host in "${CLUSTER_HOSTS[@]}"
   do
     ssh root@$host "cp $CERT_DIR/rootca.pem $CERT_DIR/$CA_CERTIFICATE"
@@ -59,13 +61,23 @@ concat_cert_ca_signed()
 
 concat_cert_self_signed()
 {
-  CLUSTER_HOSTS=$2
- 
   echo ""
   echo "Concatenating pem files together from all hosts"
   for host in "${CLUSTER_HOSTS[@]}"
   do
+    echo "Copying $CERT_DIR/server.pem on host $host to /tmp/tmp-cert-concat.pem:"
+    echo ""
     ssh root@$host "cat $CERT_DIR/server.pem" >> /tmp/tmp-cert-concat.pem
+
+    # we also need to copy each host's certificate to CM server so that
+    # we can import it into CM's truststore
+    if [ "$CM_HOST" != "$host" ]; then
+      echo "Copying certificate from $host to $CM_HOST and import into $CM_HOST's truststore file"
+      scp root@$host:$CERT_DIR/$host.pem $CERT_DIR
+      $JAVA_HOME/bin/keytool -import -alias $host -file $CERT_DIR/$host.pem -trustcacerts -keystore $JAVA_HOME/jre/lib/security/jssecacerts -storepass $TRUSTSTORE_PASS -noprompt
+      echo "$JAVA_HOME/bin/keytool -import -alias $host -file $CERT_DIR/$host.pem -trustcacerts -keystore $JAVA_HOME/jre/lib/security/jssecacerts -storepass $TRUSTSTORE_PASS -noprompt"
+      echo ""
+    fi
   done
   
   # after finished, re-upload them back to their original location
@@ -88,7 +100,7 @@ done
 # now after all certificates generated, we need to concat them all into one file
 # so that they can each server can be trusted with each other, needed for Hue, Impala etc
 if [ "$TYPE" == "ca" ]; then
-  concat_cert_ca_signed ${CLUSTER_HOSTS[@]}
+  concat_cert_ca_signed
 else
-  concat_cert_self_signed ${CLUSTER_HOSTS[@]}
+  concat_cert_self_signed
 fi

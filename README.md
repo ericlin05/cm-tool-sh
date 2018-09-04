@@ -17,7 +17,7 @@ This tool is developed for ease of managing CDH cluster via Cloudera Manager API
 
 ## How to use the tool
 
-This tool needs to be run from a host within the cluster, ideally the Cloudera Manager server host. 
+**This tool needs to be run on the Cloudera Manager server host, running on Agent hosts has not been tested.** 
 
 It uses Unix's "curl" command to communicate with Cloudera Manager API, so it must be installed. 
 
