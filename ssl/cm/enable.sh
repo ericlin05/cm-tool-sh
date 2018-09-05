@@ -34,7 +34,7 @@ echo -n "And confirm \"yes\" to continue restarting CM server and agents: "
 read response
 
 if [ $response == "yes" ]; then
-  #sh $BASE_DIR/enable-agent.sh $CM_HOST $TLS_ENABLED
+  sh $BASE_DIR/enable-agent.sh $CM_HOST $TLS_ENABLED
 
   echo ""
   echo "Restarting CM server on host: $CM_HOST"
