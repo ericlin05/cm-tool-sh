@@ -18,7 +18,7 @@ echo "Updating Hue Config to enable SSL"
 ROLE_GROUP_ID=`curl -s -S -u $CM_USER:$CM_PASS $INSECURE "$API_URL/clusters/$CLUSTER/services/$SERVICE/roleConfigGroups" | grep name | grep '\-HUE_SERVER\-' | sed -e 's/.*"\(.*HUE_SERVER.*\)".*/\1/g'`
 
 curl -s -S -X PUT -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE \
-  -d "{ \"items\": [ { \"name\": \"ssl_cacerts\", \"value\": \"$CERT_DIR/$CA_CERTIFICATE\" }, { \"name\": \"ssl_private_key_password\", \"value\": \"$KEYSTORE_PASS\" }, { \"name\": \"ssl_private_key\", \"value\": \"$CERT_DIR/server.key\" }, { \"name\": \"ssl_certificate\", \"value\": \"$CERT_DIR/server.pem\" } ] }" \
+  -d "{ \"items\": [ { \"name\": \"ssl_cacerts\", \"value\": \"$CERT_DIR/$CA_CERTIFICATE\" }, { \"name\": \"ssl_private_key_password\", \"value\": \"$KEYSTORE_PASS\" }, { \"name\": \"ssl_private_key\", \"value\": \"$CERT_DIR/server.key\" }, { \"name\": \"ssl_certificate\", \"value\": \"$CERT_DIR/server.pem\" }, { \"name\": \"ssl_enable\", \"value\": \"true\" } ] }" \
   "$API_URL/clusters/$CLUSTER/services/$SERVICE/roleConfigGroups/$ROLE_GROUP_ID/config"
 
 echo ""
