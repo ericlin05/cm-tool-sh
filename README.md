@@ -71,12 +71,9 @@ To enable SSL/TLS for the cluster, there are three steps:
   ```
   
   This script will update CM server and agent configurations to enable SSL/TLS, 
-  restart all CM agents and server processes automatically.
+  restart all CM agents, server and management services processes automatically.
   
   It assumes that the SSL Certificates are generated from first step.
-  
-  After Cloudera Manager restarted, we need to log into CM and then restart Cloudera Management Services 
-  manually, it is on the todo list to have this done automatically, see below in TODO section.
    
 * Update CDH configurations in Cloudera Manager to enable SSL for each services
 
@@ -94,13 +91,19 @@ To enable SSL/TLS for the cluster, there are three steps:
   
   It also assumes that the SSL Certificates are generated from first step.
  
- ## TODO
+ ## Known Issues & Limitations
  
+ * Relies on **/usr/bin/bigtop-detect-javahome** to detect JAVA_HOME
+ * Need to be run on Cloudera Manager host
+ * Manual step required for Hue to connect to Impala & HiveServer2, please refer to below links:
+   * [Enabling Hue TLS/SSL Communication with HiveServer2](https://www.cloudera.com/documentation/enterprise/latest/topics/cm_sg_ssl_hue.html#concept_lxw_cyf_jr)
+   * [Enabling Hue TLS/SSL Communication with Impala](https://www.cloudera.com/documentation/enterprise/latest/topics/cm_sg_ssl_hue.html#concept_cfy_3dl_zt)
+ 
+ ## TODOs
  * Support disablement of SSL/TLS for any service
  * Support SSL/TLS for other CDH components
  * Support enabling HA services for various CDH components
  * Support enabling Kerberos for CDH
  * Support enabling Sentry for various CDH components
- * Need to restart CM Management Services automatically, currently needs to be manually done after CM restart
  * More to come... 
  
