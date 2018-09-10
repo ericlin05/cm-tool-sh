@@ -93,7 +93,7 @@ To enable SSL/TLS for the cluster, there are three steps:
  
  ## Known Issues & Limitations
  
- * Relies on **/usr/bin/bigtop-detect-javahome** to detect JAVA_HOME
+ * Relies on **/usr/bin/bigtop-detect-javahome** to detect JAVA_HOME, and assumes that it is the same on all hosts
  * Need to be run on Cloudera Manager host
  * Manual step required for Hue to connect to Impala & HiveServer2, please refer to below links:
    * [Enabling Hue TLS/SSL Communication with HiveServer2](https://www.cloudera.com/documentation/enterprise/latest/topics/cm_sg_ssl_hue.html#concept_lxw_cyf_jr)
@@ -105,5 +105,6 @@ To enable SSL/TLS for the cluster, there are three steps:
  * Support enabling HA services for various CDH components
  * Support enabling Kerberos for CDH
  * Support enabling Sentry for various CDH components
+ * Since it will clear /opt/cloudera/security/jks directory, need to have warning before going ahead
  * More to come... 
  

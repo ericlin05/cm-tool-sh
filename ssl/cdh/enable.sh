@@ -20,7 +20,7 @@ BASE_DIR=$(dirname $0)
 source $BASE_DIR/../../config.sh $HOST $TLS_ENABLED
 
 # checking the list of available clusters
-clusters=(`curl -s -S -u $CM_USER:$CM_PASS "$API_URL/clusters" $INSECURE | grep '"name"' | sed -e 's/.*"\(.*\)".*/\1/g'`)
+clusters=(`curl -s -S -u $CM_USER:$CM_PASS "$API_URL/clusters" $INSECURE | grep clusterUrl | sed -e 's#.*clusterRedirect/\(.*\)",#\1#g'`)
 
 echo "I have detected following clusters:"
 echo ""
@@ -61,9 +61,12 @@ if [ "$confirm" != "yes" ]; then
   exit 0
 fi
 
+CLUSTER_URL_NAME=`echo $CLUSTER_NAME | sed -e 's/+/%20/g'`
+CLUSTER_NAME=`echo $CLUSTER_NAME | sed -e 's/+/ /g'`
+
 # retrieving the list of available services in the cluster chosen
 # so that we can ask user to choose from
-available_services=(`curl -s -S -u $CM_USER:$CM_PASS "$API_URL/clusters/$CLUSTER_NAME/services" $INSECURE | grep '"serviceUrl"' | sed -e 's@.*/\(.*\)".*@\1@g'`)
+available_services=(`curl -s -S -u $CM_USER:$CM_PASS "$API_URL/clusters/$CLUSTER_URL_NAME/services" $INSECURE | grep '"serviceUrl"' | sed -e 's@.*/\(.*\)".*@\1@g'`)
 
 echo "I have detected following services available for cluster \"$CLUSTER_NAME\":"
 
@@ -74,7 +77,7 @@ do
   for s_service in ${SUPPORTED_SERVICES[@]}
   do
     # checking if the supported service is in the list
-    m=`echo $service | grep "^$s_service" | wc -l`
+    m=`echo $service | grep -i "^$s_service" | wc -l`
     if [ "$m" == "1" ]; then
       services[$s_service]=$service
     fi
@@ -130,8 +133,8 @@ do
     echo ""
     echo "##############################################################"
     echo "Updating $service.."
-    echo "Running bash $BASE_DIR/$service/update-cm-config.sh $HOST $CLUSTER_NAME ${CHOSEN_SERVICES[$service]} $TLS_ENABLED"
-    bash $BASE_DIR/$service/update-cm-config.sh $HOST $CLUSTER_NAME ${CHOSEN_SERVICES[$service]} $TLS_ENABLED
+    echo "Running bash $BASE_DIR/$service/update-cm-config.sh $HOST $CLUSTER_URL_NAME ${CHOSEN_SERVICES[$service]} $TLS_ENABLED"
+    bash $BASE_DIR/$service/update-cm-config.sh $HOST $CLUSTER_URL_NAME ${CHOSEN_SERVICES[$service]} $TLS_ENABLED
     echo "##############################################################"
     echo ""
 
@@ -143,13 +146,13 @@ if [ $num_services -eq 1 ]; then
   echo ""
   echo "Restarting Service ${CHOSEN_SERVICES[$choice]}"
   curl -s -S -X POST -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE \
-    "$API_URL/clusters/$CLUSTER_NAME/services/$service/commands/restart"
+    "$API_URL/clusters/$CLUSTER_URL_NAME/services/$service/commands/restart"
 else
   echo ""
   echo "Restarting Cluster"
   curl -s -S -X POST -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE \
     -d "{ \"restartOnlyStaleServices\": \"true\", \"redeployClientConfiguration\": \"true\" }" \
-    "$API_URL/clusters/$CLUSTER_NAME/commands/restart"
+    "$API_URL/clusters/$CLUSTER_URL_NAME/commands/restart"
 fi
 
 echo "DONE"
