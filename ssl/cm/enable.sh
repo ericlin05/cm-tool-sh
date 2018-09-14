@@ -44,18 +44,21 @@ if [ $response == "yes" ]; then
   # do not capture the error so that we can continue checking CM's status
   set +e
 
+  NEW_CM_URL=`echo "$CM_URL"  | sed 's/http:/https:/g' | sed 's/:7180/:7183/g'`
+  NEW_API_URL=`echo "$API_URL"  | sed 's/http:/https:/g' | sed 's/:7180/:7183/g'`
+
   # waiting for CM to start so that we can restart CM management services
   test=""
-  echo "Waiting 10 seconds for CM to start up:"
+  echo "Waiting 5 seconds for CM to start up:"
   while [ -z "$test" ]
   do
     sleep 5;
     echo "Continue waiting 5 seconds for CM to start up:"
-    test=`curl -s -u $CM_USER:$CM_PASS "$CM_URL/api/version" $INSECURE`
+    test=`curl -s -u $CM_USER:$CM_PASS "$NEW_CM_URL/api/version" --insecure`
   done
 
   echo ""
   echo "Restarting CM Management Services"
-  curl -s -S -X POST -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE \
-  "$API_URL/cm/service/commands/restart"
+  curl -s -S -X POST -H "Content-Type:application/json" -u $CM_USER:$CM_PASS --insecure \
+  "$NEW_API_URL/cm/service/commands/restart"
 fi
