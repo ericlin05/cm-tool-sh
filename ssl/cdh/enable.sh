@@ -28,7 +28,8 @@ tLen=${#clusters[@]}
 for (( i=0; i<${tLen}; i++ ));
 do
   a=$(( i+1 ))
-  echo "$a) ${clusters[$i]}" 
+  name=`echo "${clusters[$i]}" | sed 's/+/ /g'`
+  echo "$a) $name"
 done
 
 # if there are more than 1 clusters, ask user to select one
@@ -149,7 +150,7 @@ if [ $num_services -eq 1 ]; then
   echo ""
   echo "Restarting Service ${CHOSEN_SERVICES[$choice]}"
   curl -s -S -X POST -H "Content-Type:application/json" -u $CM_USER:$CM_PASS $INSECURE \
-    "$API_URL/clusters/$CLUSTER_URL_NAME/services/$service/commands/restart"
+    "$API_URL/clusters/$CLUSTER_URL_NAME/services/${CHOSEN_SERVICES[$choice]}/commands/restart"
 else
   echo ""
   echo "Restarting Cluster"
