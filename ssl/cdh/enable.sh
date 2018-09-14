@@ -50,6 +50,12 @@ else
   CLUSTER_NAME=${clusters[0]}
 fi
 
+# The URL's space is %20
+CLUSTER_URL_NAME=`echo $CLUSTER_NAME | sed -e 's/+/%20/g'`
+
+# remove "+" so that we display proper name
+CLUSTER_NAME=`echo $CLUSTER_NAME | sed -e 's/+/ /g'`
+
 echo ""
 echo -n "You have selected to update cluster \"$CLUSTER_NAME\" to enable SSL, please confirm (yes or no): "
 read confirm
@@ -60,9 +66,6 @@ if [ "$confirm" != "yes" ]; then
   echo ""
   exit 0
 fi
-
-CLUSTER_URL_NAME=`echo $CLUSTER_NAME | sed -e 's/+/%20/g'`
-CLUSTER_NAME=`echo $CLUSTER_NAME | sed -e 's/+/ /g'`
 
 # retrieving the list of available services in the cluster chosen
 # so that we can ask user to choose from
